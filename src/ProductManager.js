@@ -16,14 +16,14 @@ class ProductManager {
                 } else return []
             })
             .catch(err => {
-                console.log('El archivo aún no ha sido creado. Intente añadir un producto')
+                console.error('El archivo aún no ha sido creado. Intente añadir un producto')
                 return []
             })
     }
 
     saveProducts = (products) => {
         const productsStr = JSON.stringify(products)
-        fs.writeFile(this.path, productsStr, error => console.log(error))
+        fs.writeFile(this.path, productsStr, error => console.error(error))
     }
 
     getProductById = async (id) => {
@@ -48,8 +48,6 @@ class ProductManager {
         } else return 1
     }
 
-
-    // Función que valida que el código no se repita y que todos los campos estén completos
     checkFields = async (product) => {
 
         const emptyFields = []
@@ -75,8 +73,6 @@ class ProductManager {
         return true
     }
 
-    // addProduct = async (title, description, code, price, status, stock, category, thumbnails) => 
-
     addProduct = async (obj) => {
 
         const id = await this.getNextID()
@@ -84,18 +80,6 @@ class ProductManager {
             id,
             ... obj
         }
-
-        // const product = {
-        //     id,
-        //     title: title.trim(),
-        //     description: description.trim(),
-        //     code: code.trim(),
-        //     price,
-        //     status,
-        //     stock,
-        //     category,
-        //     thumbnails: thumbnails.trim()
-        // }
 
         if(await this.checkFields(product)) {
 
@@ -114,7 +98,7 @@ class ProductManager {
         const products = await this.getProducts()
 
         const checkID = () => products.some(prod => prod.id == id)
-        if(!checkID()) return console.log("El producto no se encontró")
+        if(!checkID()) return console.error("El producto no se encontró")
 
         const productToUpdate = products.findIndex(prod => prod.id == id)
 
@@ -131,7 +115,7 @@ class ProductManager {
         const products = await this.getProducts()
 
         const checkID = () => products.some(prod => prod.id == id)
-        if(!checkID()) return console.log("El producto no se encontró")
+        if(!checkID()) return console.error("El producto no se encontró")
 
         const updatedProducts = products.filter(prod => prod.id != id)
 

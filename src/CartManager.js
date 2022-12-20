@@ -16,14 +16,14 @@ class CartManager {
             } else return []
         })
         .catch(err => {
-            console.log('El archivo aún no ha sido creado. Intente añadir un producto')
+            console.error('El archivo aún no ha sido creado. Intente añadir un producto')
             return []
         }) 
     }
 
     write = (carts) => {
         const cartsStr = JSON.stringify(carts)
-        fs.writeFile(this.path, cartsStr, error => console.log(error))
+        fs.writeFile(this.path, cartsStr, error => console.error(error))
     }
 
     getNextID = async () => {
@@ -61,7 +61,7 @@ class CartManager {
 
         const cart = carts.find(cart => cart.id == cid)
 
-        if(!cart) return console.log("No se encontró el carrito")
+        if(!cart) return console.error("No se encontró el carrito")
 
         return cart
     }
@@ -86,18 +86,11 @@ class CartManager {
         const carts = await this.read()
 
         const checkID = () => carts.some(cart => cart.id == cid)
-        if(!checkID()) return console.log("El carrito no se encontró")
+        if(!checkID()) return console.error("El carrito no se encontró")
 
-        // const cartToUpdate = this.findCart(cid)
         const cartIndex = carts.findIndex(cart => cart.id == cid)
 
         carts[cartIndex] = obj
-
-        // carts[cartToUpdate] = {
-        //     ... carts[cartToUpdate],
-        //     ... obj,
-        //     id: id
-        // }
 
         await this.write(carts)
     }
@@ -105,7 +98,6 @@ class CartManager {
 
     addProduct = async (cid, pid) => {
         
-        // const carts = await this.read()
         const cart = await this.findCart(cid)
 
         const product = await this.findProduct(cid, pid)
