@@ -75,7 +75,7 @@ class CartManager {
     findProduct = async (cid, pid) => {
         const products = await this.getProducts(cid)
         
-        const product = products.find(prod => prod.id == pid)
+        const product = products?.find(prod => prod.id == pid)
 
         if(product) return product
         return false
@@ -101,6 +101,8 @@ class CartManager {
         const cart = await this.findCart(cid)
 
         const product = await this.findProduct(cid, pid)
+
+        if(!cart) return console.error({error: "No se encontró el carrito"})
         
         if(!product) cart.products.push({id: pid, quantity: 1})
         else {

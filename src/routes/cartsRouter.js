@@ -1,8 +1,10 @@
 import { Router } from 'express'
 import CartManager from '../CartManager.js'
+import ProductManager from '../ProductManager.js'
 
 const router = Router()
 const cartManager = new CartManager('./carts.json')
+const productManager = new ProductManager('./products.json')
 
 router.post('/', async (req, res) => {
 
@@ -24,10 +26,12 @@ router.post('/:cid/products/:pid', async (req, res) => {
 
     const cid = req.params.cid
     const pid = req.params.pid
+    const product = await productManager.getProductById(pid)
 
-    await cartManager.addProduct(cid, pid)
-
-    res.send({status: "success", msg: "Producto agregado"})
+    if(!product) res.send({status: "error", error: 'No se ha encontrado el producto'})
+    const updatedCart = await cartManager.addProduct(cid, pid)
+    if(!updatedCart) res.send({status: "error", error: "No se encontró el carrito"})
+    else res.send({status: "success", msg: "Producto agregado"}) 
 })
 
 export default router
